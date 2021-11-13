@@ -11,7 +11,7 @@ $ pip install thelogger
 ### Usage
 
 my_script.py:
-```python=
+```python class:"lineNo"
 from thelogger import lg
 
 # log messages
@@ -22,7 +22,7 @@ lg.error('error message')
 # start logging messages to a file
 lg.reset(file = './demo_log.txt')
 
-# shorthand convience methods for logging messages
+# shorthand convenience methods for logging messages
 lg.i('this is an info message')
 lg.w('this is a warning message')
 
