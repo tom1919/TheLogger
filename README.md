@@ -32,7 +32,7 @@ lg.i('nothing is logged because there are no log handlers')
 
 # add default log handlers
 lg.reset()
-```python=
+```
 
 Output to console:
 ```
