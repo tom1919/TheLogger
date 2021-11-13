@@ -19,14 +19,15 @@ lg.warning('warning message')
 lg.error('error message')
 
 # start logging messages to a file
-lg.reset(file = './demo_log.log')
+lg.reset(file = './demo_log.txt')
 
 # shorthand convience methods for logging messages
-lg.d('this is a debug message')
 lg.i('this is an info message')
+lg.w('this is a warning message')
 
 # remove log handlers
 lg.close()
+lg.i('nothing is logged because there are no log handlers')
 
 # add default log handlers
 lg.reset()
@@ -35,11 +36,16 @@ lg.reset()
 Output to console:
 
 ```
-console output
+[I 2021-11-13 08:50:36] Hello World
+[W 2021-11-13 08:50:36] warning message
+[E 2021-11-13 08:50:36] error message
+[I 2021-11-13 08:50:36] this is an info message
+[W 2021-11-13 08:50:36] this is a warning message
 ```
 
-Output to file:
+Output to demo_log.txt:
 
 ```
-file output
+[I 2021-11-13 08:50:36 my_script:19] this is an info message
+[W 2021-11-13 08:50:36 my_script:20] this is a warning message
 ```
