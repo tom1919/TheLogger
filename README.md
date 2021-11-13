@@ -31,3 +31,15 @@ lg.close()
 # add default log handlers
 lg.reset()
 ```
+
+Output to console:
+
+'''
+console output
+'''
+
+Output to file:
+
+'''
+file output
+'''
