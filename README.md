@@ -1,6 +1,6 @@
 # TheLogger
 
-Easy to use logger object for creating code logs. Just import it and it's set up and ready to go.
+Easy to use logger object for creating code logs. Just import it and it's set up, ready to go.
 
 ### Installation
 
