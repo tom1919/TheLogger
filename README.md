@@ -10,7 +10,8 @@ $ pip install thelogger
 
 ### Usage
 
-```python
+my_script.py:
+```python=
 from thelogger import lg
 
 # log messages
@@ -34,7 +35,6 @@ lg.reset()
 ```
 
 Output to console:
-
 ```
 [I 2021-11-13 08:50:36] Hello World
 [W 2021-11-13 08:50:36] warning message
@@ -44,8 +44,7 @@ Output to console:
 ```
 
 Output to demo_log.txt:
-
 ```
-[I 2021-11-13 08:50:36 my_script:19] this is an info message
-[W 2021-11-13 08:50:36 my_script:20] this is a warning message
+[I 2021-11-13 08:50:36 my_script:12] this is an info message
+[W 2021-11-13 08:50:36 my_script:13] this is a warning message
 ```
