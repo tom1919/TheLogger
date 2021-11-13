@@ -13,7 +13,7 @@ setup(
   long_description_content_type = 'text/markdown',
   author = 'Tom1919',                   
   author_email = 'py.notify1@gmail.com',      
-  url = 'https://github.com/tom1919/TheLogger,  
+  url = 'https://github.com/tom1919/TheLogger',  
   download_url = 'https://github.com/tom1919/TheLogger/archive/refs/tags/v0.1.1.tar.gz',   
   keywords = ['log', 'logging', 'logger'],  
   classifiers=[
