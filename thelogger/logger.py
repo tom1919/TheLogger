@@ -20,7 +20,7 @@ LOG_LEVELS = {'debug': logging.DEBUG, #10
               'critical': logging.CRITICAL} #50
 ERR = f'Invalid arg for {0}_level. valid levels are: {list(LOG_LEVELS.keys())}'
 
-def create_logger(file=None, file_level='info', console_level='debug'):
+def _create_logger(file=None, file_level='info', console_level='debug'):
     
     logger = logging.getLogger(LOGGER_NAME)
     logger.file, logger.file_level, = file, file_level
@@ -42,12 +42,36 @@ def create_logger(file=None, file_level='info', console_level='debug'):
     return logger
 
 def close(self):
+    '''
+    removes all log handlers from logger object
+    '''
     for handler in list(self.handlers):
         handler.close()
         self.removeHandler(handler)
 
 def reset(self, file=None, file_level='info', console_level='debug', 
           remove_file=False):
+    '''
+    modifies logger obeject behavior
+
+    Parameters
+    ----------
+    file : str, optional
+        file path to save log messages to. 
+        The default is None and will not ouput logs to a file.
+    file_level : str, optional
+        logging level for logs sent to a file. The default is 'info'. level
+        must be one of: debug, info, warn, error or critical
+    console_level : str, optional
+        logging level for logs sent to a console / std out. The default is 
+        'debug'. level must be one of: debug, info, warn, error or critical
+    remove_file : boolena, optional
+        delete the log file before creating a new one. The default is False.
+
+    Returns
+    -------
+    modified logging.Logger object
+    '''
 
     assert console_level in LOG_LEVELS.keys(), ERR.replace('0', 'console')
     if file:
@@ -98,5 +122,5 @@ def warn(self, msg, *args, **kwargs):
     if self.isEnabledFor(logging.WARNING):
         self._log(logging.WARNING, msg, args, **kwargs)
 
-logger = create_logger()
+logger = _create_logger()
 log, lg = logger, logger
