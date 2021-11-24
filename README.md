@@ -85,3 +85,4 @@ my_str = concat_str('hello', 'world')
 ```
 
 Example Email:
+![alt text](https://github.com/tom1919/TheLogger/blob/main/example_email.PNG)
