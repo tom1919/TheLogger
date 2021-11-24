@@ -1,6 +1,6 @@
 # TheLogger
 
-Easy logging, timing and email notifications of code execution
+Easy logging, timing and email notifications of code execution.
 
 ### Installation
 
@@ -50,3 +50,40 @@ Output to demo_log.txt:
 ```
 
 ### Email Notifications
+
+my_script.py:
+```python class:"lineNo"
+from thelogger import lg, notify
+
+# decorate your func with @notify to receive an email when it's done executing
+@notify(email = 'py.notify1@gmail.com')
+def concat_str(arg1, arg2=''):
+    return f'{arg1} {arg2}'
+# the execution details of concat_str will be in the email
+my_str = concat_str('hello', 'world')
+
+# pass a logger object to log the function execution details
+@notify(email = 'py.notify1@gmail.com', logger = lg)
+def concat_str(arg1, arg2=''):
+    return f'{arg1} {arg2}'
+my_str = concat_str('hello', 'world')
+
+# include a remote host address if your organization has gmail blocked
+@notify(email = 'py.notify1@gmail.com', logger = lg, host = 'mail.abc.com')
+def concat_str(arg1, arg2=''):
+    return f'{arg1} {arg2}'
+my_str = concat_str('hello', 'world')
+
+# quick test to see if your able to receive emails
+notify('py.notify1@gmail.com', test = True)
+
+# set the default arguments for the notify decorator
+notify = notify(email = 'py.notify1@gmail.com', logger = lg, setdefault = True)
+# now you can decorate functions w/o passing the args to @notify each time
+@notify
+def concat_str(arg1, arg2=''):
+    return f'{arg1} {arg2}'
+my_str = concat_str('hello', 'world')
+```
+
+### Example Email
