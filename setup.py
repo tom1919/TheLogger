@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
   name = 'thelogger',       
-  packages = ['thelogger'],  
+  packages = ['thelogger', 'thelogger.notify'],  
   version = 'v0.2.1',      
   license='Apache 2.0',       
   description = 'Easy logging, timing and email notifications of code execution.',  
