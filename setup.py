@@ -8,7 +8,7 @@ setup(
   packages = ['thelogger'],  
   version = 'v0.2.0',      
   license='Apache 2.0',       
-  description = 'easy logging, timing and email notifications of code execution',  
+  description = 'Easy logging, timing and email notifications of code execution.',  
   long_description = long_description,
   long_description_content_type = 'text/markdown',
   author = 'Tom1919',                   
