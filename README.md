@@ -1,6 +1,6 @@
 # TheLogger
 
-Easy to use logger object for creating code logs. Just import it and it's set up, ready to go.
+Easy logging, timing and email notifications of code execution
 
 ### Installation
 
@@ -8,7 +8,7 @@ Easy to use logger object for creating code logs. Just import it and it's set up
 $ pip install thelogger
 ```
 
-### Usage
+### Logging
 
 my_script.py:
 ```python class:"lineNo"
@@ -48,3 +48,5 @@ Output to demo_log.txt:
 [I 2021-11-13 08:50:36 my_script:12] this is an info message
 [W 2021-11-13 08:50:36 my_script:13] this is a warning message
 ```
+
+### Email Notifications
