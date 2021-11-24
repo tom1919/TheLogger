@@ -34,7 +34,7 @@ lg.i('nothing is logged because there are no log handlers')
 lg.reset()
 ```
 
-Output to console:
+Output to Console:
 ```
 [I 2021-11-13 08:50:36] Hello World
 [W 2021-11-13 08:50:36] warning message
@@ -50,35 +50,33 @@ Output to demo_log.txt:
 ```
 
 ### Email Notifications
-
-my_script.py:
 ```python class:"lineNo"
 from thelogger import lg, notify
 
-# decorate your func with @notify to receive an email when it's done executing
-@notify(email = 'py.notify1@gmail.com')
+# decorate your func with @notify and pass in your email address 
+@notify(email = 'my_email@gmail.com')
 def concat_str(arg1, arg2=''):
     return f'{arg1} {arg2}'
-# the execution details of concat_str will be in the email
+# when concat_str is finished executing you will receive an email with the details
 my_str = concat_str('hello', 'world')
 
 # pass a logger object to log the function execution details
-@notify(email = 'py.notify1@gmail.com', logger = lg)
+@notify(email = 'my_email@gmail.com', logger = lg)
 def concat_str(arg1, arg2=''):
     return f'{arg1} {arg2}'
 my_str = concat_str('hello', 'world')
 
 # include a remote host address if your organization has gmail blocked
-@notify(email = 'py.notify1@gmail.com', logger = lg, host = 'mail.abc.com')
+@notify(email = 'my_email@gmail.com', logger = lg, host = 'mail.abc.com')
 def concat_str(arg1, arg2=''):
     return f'{arg1} {arg2}'
 my_str = concat_str('hello', 'world')
 
 # quick test to see if your able to receive emails
-notify('py.notify1@gmail.com', test = True)
+notify('my_email@gmail.com', test = True)
 
 # set the default arguments for the notify decorator
-notify = notify(email = 'py.notify1@gmail.com', logger = lg, setdefault = True)
+notify = notify(email = 'my_email@gmail.com', logger = lg, setdefault = True)
 # now you can decorate functions w/o passing the args to @notify each time
 @notify
 def concat_str(arg1, arg2=''):
@@ -86,4 +84,4 @@ def concat_str(arg1, arg2=''):
 my_str = concat_str('hello', 'world')
 ```
 
-### Example Email
+Example Email:
