@@ -72,7 +72,7 @@ def concat_str(arg1, arg2=''):
     return f'{arg1} {arg2}'
 my_str = concat_str('hello', 'world')
 
-# quick test to see if your able to receive emails
+# quick test to see if you're able to receive emails
 notify('my_email@gmail.com', test = True)
 
 # set the default arguments for the notify decorator
