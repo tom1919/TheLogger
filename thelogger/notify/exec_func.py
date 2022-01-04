@@ -23,15 +23,61 @@ try:
 except ImportError:  # Graceful fallback if IceCream isn't installed.
     ic = lambda *a: None if not a else (a[0] if len(a) == 1 else a)  
 
+#%% exec_func
+
+def _exec_func(function, email, timeit, logger, printf, notes, error, host, 
+               stacklvl, *args, **kwargs):
+    
+    code, fn_name = _parse_stack(function, stacklvl)
+    exec_times, latest_error, err_traceback = [], None, None
+    for i in range(1,timeit+1):
+        _log_msg(logger, printf, f"Starting: {code}...")
+        try:
+            t1, start_time = time.perf_counter(), pd.to_datetime('today') 
+            result = function(*args, **kwargs)
+        except Exception as err:
+            latest_error = err
+            err_traceback = traceback.format_exc() 
+        _log_msg(logger, printf, f"Finished: {code}...")
+        exec_times.append(time.perf_counter() - t1)
+        end_time = pd.to_datetime('today')
+    min_exec_tm = str(timedelta(seconds = min(exec_times))).rstrip('0')
+    result = result if latest_error is None else latest_error
+
+    fn_meta = _fn_meta(function, args, kwargs, result)
+    _log_msg(logger, printf, _format_msg(fn_meta, fn_name, min_exec_tm))
+    _send_email(email, host, fn_meta, fn_name, latest_error, min_exec_tm, code, 
+                start_time, end_time, err_traceback)
+        
+    if latest_error is not None:
+        _log_msg(logger, printf, f"Error in {code}...\n{err_traceback}", 
+                 err_traceback)
+        if error:
+            raise latest_error
+    
+    return result
+
 #%% helpers 
 
-def _parse_stack(function):
-    stack = traceback.extract_stack()
-    #TODO: logic for finding correct lvl, maybe have user pass it, 
-    # while fn_name != fn_name_guess
-    _, _, _, code = stack[-4] 
-    #fn_name_guess = re.search( r"\=?([^\s|=]+)\(", code).group(1)
+def _parse_stack(function, stacklvl):
+    
     fn_name = function.__name__
+    stack = traceback.extract_stack()
+    
+    if stacklvl:
+        _, _, _, code = stack[stacklvl] 
+        return code, fn_name
+    
+    for lvl in range(-4,-13,-1):
+        _, _, _, code = stack[lvl] 
+        if fn_name in code:
+            break
+        
+    if fn_name not in code:
+        raise ValueError('Unable to guess the stack trace level that contains'\
+                         ' the correct function call. Ensure notify is used'\
+                         ' as the first decorator.')
+            
     return code, fn_name
 
 def _parse_fn_signature(function):
@@ -109,7 +155,7 @@ def _email_inputs(fn_meta, fn_name, latest_error, min_exec_tm,
            {fn_meta.to_html(index = False)}<br>
            {err_tb}
            --<br>
-           <b>See The Docs:</b> <a href="http://www.python.org">TheLogger</a> 
+           <b>See The Docs:</b> <a href="https://www.python.org/">TheLogger</a> 
         </p>
       </body>
     </html>
@@ -148,39 +194,3 @@ def _format_msg(fn_meta, fn_name, min_exec_tm):
     msg = f"Inputs and Output of {fn_name}:\n{fn_meta_txt}"
     msg = f"{msg}\nElapsed Time: {min_exec_tm}"
     return msg
-
-#%% exec_func
-
-def _exec_func(function, email, timeit, logger, printf, notes, error, host, 
-               *args, **kwargs):
-    
-    code, fn_name = _parse_stack(function)
-    exec_times, latest_error, err_traceback = [], None, None
-    for i in range(1,timeit+1):
-        _log_msg(logger, printf, f"Starting: {code}...")
-        try:
-            t1, start_time = time.perf_counter(), pd.to_datetime('today') 
-            result = function(*args, **kwargs)
-        except Exception as err:
-            latest_error = err
-            err_traceback = traceback.format_exc() 
-        _log_msg(logger, printf, f"Finished: {code}...")
-        exec_times.append(time.perf_counter() - t1)
-        end_time = pd.to_datetime('today')
-    min_exec_tm = str(timedelta(seconds = min(exec_times))).rstrip('0')
-    result = result if latest_error is None else latest_error
-
-    fn_meta = _fn_meta(function, args, kwargs, result)
-    _log_msg(logger, printf, _format_msg(fn_meta, fn_name, min_exec_tm))
-    _send_email(email, host, fn_meta, fn_name, latest_error, min_exec_tm, code, 
-                start_time, end_time, err_traceback)
-        
-    if latest_error is not None:
-        _log_msg(logger, printf, f"Error in {code}...\n{err_traceback}", 
-                 err_traceback)
-        if error:
-            raise latest_error
-    
-    return result
-
-
