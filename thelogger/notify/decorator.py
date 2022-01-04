@@ -9,9 +9,12 @@ from functools import wraps, partial
 from .exec_func import _exec_func
 
 def notify(function=None, *, email=None, timeit=1, logger=None, printf=None,
-           notes=None, error=True, host=None, setdefault=False, test=False):
+           notes=None, error=True, host=None, stacklvl=None, setdefault=False, 
+           test=False):
     '''
-    Decorator that sends an email with execution details of a function
+    Decorator that sends an email with execution details of a function. This 
+    must be first decorator of a function for the function details logged to be 
+    relevant, otherwise it will log details of subsequent decorators.
 
     Parameters
     ----------
@@ -39,6 +42,10 @@ def notify(function=None, *, email=None, timeit=1, logger=None, printf=None,
         remote host that email is sent thru. if sending emails thru gmail is 
         blocked by your organization then a valid host must be passed 
         The default is None. (e.g. 'mail.abc.com')
+    stacklvl : int, optional
+        stack trace level used to log function execution details. By default it 
+        will guess -4 and decrease the level down to -12 until the correct 
+        level is found. 
     setdefault : boolean, optional
         if true then a version of the notify function is returned with given 
         args set as the default. The default is False. 
@@ -61,14 +68,16 @@ def notify(function=None, *, email=None, timeit=1, logger=None, printf=None,
         function = test_func
     if setdefault:
         return partial(notify, email=email, timeit=timeit, logger=logger, 
-                       printf=printf, notes=notes, error=error, host=host)
+                       printf=printf, notes=notes, error=error, host=host,
+                       stacklvl=stacklvl)
     if function is None: # if @notifiy is used w/ args passed, return decorator
         return partial(notify, email=email, timeit=timeit, logger=logger, 
-                       printf=printf, notes=notes, error=error, host=host)
+                       printf=printf, notes=notes, error=error, host=host,
+                       stacklvl=stacklvl)
     @wraps(function)
     def wrapper(*args, **kwargs):
         return _exec_func(function, email, timeit, logger, printf, notes,  
-                          error, host, *args, **kwargs)
+                          error, host, stacklvl, *args, **kwargs)
     if test:
         return wrapper()
     return wrapper
