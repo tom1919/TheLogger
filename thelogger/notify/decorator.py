@@ -66,6 +66,7 @@ def notify(function=None, *, email=None, timeit=1, logger=None, printf=None,
         def test_func():
             return "Pass"
         function = test_func
+        stacklvl = -5
     if setdefault:
         return partial(notify, email=email, timeit=timeit, logger=logger, 
                        printf=printf, notes=notes, error=error, host=host,
