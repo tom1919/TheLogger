@@ -89,7 +89,7 @@ Example Email:
 ![alt text](https://github.com/tom1919/TheLogger/blob/main/example_email.PNG)
 
 ### "Free" Logging of Scripts
-# Leverage TheLogger to easily log a program's execution details without typing out any log messages
+#### Leverage TheLogger to easily log a program's execution details without typing out any log messages
 
 my_program.py:
 ```python class:"lineNo"
