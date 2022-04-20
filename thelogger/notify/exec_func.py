@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Oct 15 07:15:17 2021
-
 @author: tommy
 """
 
@@ -95,9 +94,9 @@ def _log_msg(logger, printf, msg, err_traceback = None):
         
     if logger is not None:
         if err_traceback is None:
-            logger.info(msg, stacklevel=5) # for stack frame of org caller
+            logger.info(msg, stacklevel=4) # for stack frame of org caller
         else:
-            logger.error(msg)
+            logger.error(msg, stacklevel=4)
             
     if printf:
         print(f"{pd.to_datetime('today').strftime('[%y%m%d %H:%m:%S]')} {msg}")
@@ -105,7 +104,8 @@ def _log_msg(logger, printf, msg, err_traceback = None):
 def _custom_obj_str(obj):
     strg = str(obj)[0:50] if hasattr(obj, '__str__') else None
     if type(obj) == pd.DataFrame:
-        strg = f"cols: {', '.join(obj.columns.values)[0:50]}..." 
+        cols = [str(col) for col in obj.columns.values]
+        strg = f"cols: {', '.join(cols)[0:50]}..." 
     return strg
 
 def _len(obj):
@@ -119,14 +119,19 @@ def _fn_meta(function, args, kwargs, result):
     params = getfullargspec(function).args
     all_args = dict(zip(params[0:len(args)], args))
     all_args.update(kwargs)
-    all_args.update({'return': result})
-    var, val = list(all_args.keys()), list(all_args.values())
-    all_args = pd.DataFrame({'var':var, 'val':val})
-    all_args['type'] = all_args.val.apply(lambda x: type(x))
-    all_args['len'] = all_args.val.apply(_len)
-    all_args['str'] = all_args.val.apply(_custom_obj_str)
-    all_args = all_args.drop(columns = 'val')    
-    return all_args
+    all_args.update({'output': result})
+    
+    meta = []
+    for param, arg in all_args.items():
+        meta.append([param, 
+                     re.sub('<class |>', '', str(type(arg))), 
+                     _len(arg),
+                     _custom_obj_str(arg)])
+        
+    cols = ['Variable', 'Type', 'Length', 'String']
+    meta = pd.DataFrame.from_records(meta, columns = cols) 
+    
+    return meta
 
 def _email_inputs(fn_meta, fn_name, latest_error, min_exec_tm,
                   code, start_time, end_time, err_traceback):
@@ -152,7 +157,7 @@ def _email_inputs(fn_meta, fn_name, latest_error, min_exec_tm,
            <b>Start Time:</b> {start_time}<br>
            <b>End Time:</b> {end_time}<br>
            <b>Elasped Time:</b> {min_exec_tm}<br><br>
-           <b>Inputs and Output of <i>{fn_name}</i>:</b>
+           <b>Input(s) and Output of <i>{fn_name}</i>:</b>
            {fn_meta.to_html(index = False)}<br>
            {err_tb}
            --<br>
