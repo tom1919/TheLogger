@@ -17,6 +17,7 @@ setup(
   download_url = 'https://github.com/tom1919/TheLogger/archive/refs/tags/v0.2.6.tar.gz',   
   keywords = ['log', 'logging', 'logger', 'email', 'timimg', 'notification'],  
   install_requires = ['pandas','tabulate'], 
+  python_requires='>3.8',
   classifiers=[
     'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
     'Intended Audience :: Developers',     
