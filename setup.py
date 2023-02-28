@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setup(
   name = 'thelogger',       
   packages = ['thelogger', 'thelogger.notify'],  
-  version = 'v0.2.6',      
+  version = 'v0.2.7',      
   license='Apache 2.0',       
   description = 'Easy logging, timing and email notifications of code execution.',  
   long_description = long_description,
@@ -14,7 +14,7 @@ setup(
   author = 'Tom1919',                   
   author_email = 'py.notify1@gmail.com',      
   url = 'https://github.com/tom1919/TheLogger',  
-  download_url = 'https://github.com/tom1919/TheLogger/archive/refs/tags/v0.2.6.tar.gz',   
+  download_url = 'https://github.com/tom1919/TheLogger/archive/refs/tags/v0.2.7.tar.gz',   
   keywords = ['log', 'logging', 'logger', 'email', 'timimg', 'notification'],  
   install_requires = ['pandas','tabulate'], 
   python_requires='>3.8',
