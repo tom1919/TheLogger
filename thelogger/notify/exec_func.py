@@ -29,8 +29,11 @@ def _exec_func(function, email, timeit, logger, printf, notes, error, host,
     
     code, fn_name = _parse_stack(function, stacklvl)
     exec_times, latest_error, err_traceback = [], None, None
+    
     for i in range(1,timeit+1):
         _log_msg(logger, printf, f"Starting: {code}...")
+        if notes and i == 1:
+            _log_msg(logger, printf, f"Notes: {notes}")
         try:
             t1, start_time = time.perf_counter(), pd.to_datetime('today') 
             result = function(*args, **kwargs)
@@ -46,7 +49,7 @@ def _exec_func(function, email, timeit, logger, printf, notes, error, host,
     fn_meta = _fn_meta(function, args, kwargs, result)
     _log_msg(logger, printf, _format_msg(fn_meta, fn_name, min_exec_tm))
     _send_email(email, host, fn_meta, fn_name, latest_error, min_exec_tm, code, 
-                start_time, end_time, err_traceback)
+                start_time, end_time, err_traceback, notes)
         
     if latest_error is not None:
         _log_msg(logger, printf, f"Error in {code}...\n{err_traceback}", 
@@ -99,7 +102,7 @@ def _log_msg(logger, printf, msg, err_traceback = None):
             logger.error(msg, stacklevel=4)
             
     if printf:
-        print(f"{pd.to_datetime('today').strftime('[%y%m%d %H:%m:%S]')} {msg}")
+        print(f"{pd.to_datetime('today').strftime('[%y%m%d %H:%M:%S]')} {msg}")
 
 def _custom_obj_str(obj):
     strg = str(obj)[0:50] if hasattr(obj, '__str__') else None
@@ -110,7 +113,10 @@ def _custom_obj_str(obj):
 
 def _len(obj):
     try:
-        length = len(obj)
+        if type(obj) == pd.DataFrame:
+            length = obj.shape
+        else:
+            length = len(obj)
     except:
         length = None
     return length
@@ -134,7 +140,7 @@ def _fn_meta(function, args, kwargs, result):
     return meta
 
 def _email_inputs(fn_meta, fn_name, latest_error, min_exec_tm,
-                  code, start_time, end_time, err_traceback):
+                  code, start_time, end_time, err_traceback, notes):
     
     status = 'Successfully' if latest_error is None else 'w/ Errors'
     subject = f'TheLogger: {fn_name} Executed {status} ({min_exec_tm})'
@@ -154,6 +160,7 @@ def _email_inputs(fn_meta, fn_name, latest_error, min_exec_tm,
       <head></head>
       <body>
         <p><b>Executed:</b> {code}...<br><br>
+           :notes
            <b>Start Time:</b> {start_time}<br>
            <b>End Time:</b> {end_time}<br>
            <b>Elasped Time:</b> {min_exec_tm}<br><br>
@@ -167,16 +174,19 @@ def _email_inputs(fn_meta, fn_name, latest_error, min_exec_tm,
     </html>
     """
     
+    notes_html = f"<b>Notes:</b> {notes}...<br><br>" if notes else ''
+    body = body.replace(':notes', notes_html)
+        
     return  subject, body
 
 def _send_email(email, host, fn_meta, fn_name, latest_error, min_exec_tm, code, 
-                start_time, end_time, err_traceback):
+                start_time, end_time, err_traceback, notes):
     
     if email is None:
         return None
     
     subject, body = _email_inputs(fn_meta, fn_name, latest_error, min_exec_tm,
-                                  code, start_time, end_time, err_traceback)
+                                  code, start_time, end_time, err_traceback, notes)
     
     emsg = MIMEMultipart()
     if host is None:
