@@ -18,6 +18,9 @@ setup(
   url = 'https://github.com/tom1919/TheLogger',   
   keywords = ['log', 'logging', 'logger', 'email', 'timimg', 'notification'],  
   install_requires = ['pandas','tabulate', 'importlib-metadata >= 1.0 ; python_version < "3.8"'], 
+  url = 'https://github.com/tom1919/TheLogger',   
+  keywords = ['log', 'logging', 'logger', 'email', 'timimg', 'notification'],  
+  install_requires = ['pandas','tabulate'], 
   python_requires='>3.8',
   classifiers=[
     'Development Status :: 3 - Alpha',     
