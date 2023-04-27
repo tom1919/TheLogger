@@ -1,25 +1,29 @@
 from setuptools import setup, find_packages
 
+ver = 'v0.2.8'
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
   name = 'thelogger',       
   packages = ['thelogger', 'thelogger.notify'],  
-  version = 'v0.2.7',      
+  version = ver,       
   license='Apache 2.0',       
   description = 'Easy logging, timing and email notifications of code execution.',  
   long_description = long_description,
   long_description_content_type = 'text/markdown',
   author = 'Tom1919',                   
   author_email = 'py.notify1@gmail.com',      
-  url = 'https://github.com/tom1919/TheLogger',  
-  download_url = 'https://github.com/tom1919/TheLogger/archive/refs/tags/v0.2.7.tar.gz',   
+  url = 'https://github.com/tom1919/TheLogger',   
+  keywords = ['log', 'logging', 'logger', 'email', 'timimg', 'notification'],  
+  install_requires = ['pandas','tabulate', 'importlib-metadata >= 1.0 ; python_version < "3.8"'], 
+  url = 'https://github.com/tom1919/TheLogger',   
   keywords = ['log', 'logging', 'logger', 'email', 'timimg', 'notification'],  
   install_requires = ['pandas','tabulate'], 
   python_requires='>3.8',
   classifiers=[
-    'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
+    'Development Status :: 3 - Alpha',     
     'Intended Audience :: Developers',     
     'Topic :: Software Development :: Build Tools',
     'License :: OSI Approved :: MIT License',   
