@@ -60,4 +60,4 @@ if upload == 'y':
 
 #%% delete copied folder
 
-shutil.rmtree(trgt_dir)
+os.system(f'rmdir /S /Q "{trgt_dir}"') 
