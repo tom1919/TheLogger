@@ -9,3 +9,6 @@ Easy logging, timing and email notifications of code execution.
 
 from .logger import logger, log, lg
 from .notify import notify
+from .dirty_timer import beg, end
+
+from ._ver import __version__
