@@ -31,7 +31,6 @@ def timer():
     >>> with timer():
     ...     time.sleep(1)
     Elapsed Time: 0:00:00.999
-
     """
     beg_tm = time.perf_counter()
     yield 
