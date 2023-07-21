@@ -5,6 +5,7 @@ import psutil
 import datetime
 import platform
 import subprocess
+import pandas as pd
 from tzlocal import get_localzone
 from importlib.metadata import version
 
@@ -59,22 +60,44 @@ def get_resource_usage(tz = 'America/New_York'):
         )
     return usage
 
+def try_version(x):
+    try:
+        ver = version(x)
+    except:
+        ver = '?'# std libs don't have versions
+    return ver
+
+def get_imported_package_versions():
+    # excludes std libs
+    package_names = set()
+    for module_name, module in sys.modules.items():
+        if (module and hasattr(module, '__package__') and module.__package__
+        and module_name[0] != '_'):
+            package_names.add(module.__package__)
+    imp_mod = pd.Series(list(package_names), name = 'pkgs')
+    imp_mod = imp_mod.str.split('.').str[0]
+    imp_mod = imp_mod.drop_duplicates()
+    imp_mod = pd.DataFrame(imp_mod)
+    imp_mod['version'] = imp_mod.pkgs.apply(lambda x: try_version(x))
+    imp_mod = imp_mod.loc[imp_mod.version != '?'].sort_values('pkgs')\
+        .reset_index(drop=True)
+    return imp_mod
+
 def get_env_info(pkgs = None):
     py_ver = ".".join(str(component) for component in sys.version_info[:3])
-    
-    pkg_ver = dict()
     pkgs = [pkgs] if type(pkgs) == str else pkgs
-    pkgs = pkgs if pkgs else list()
-    for pkg in pkgs:
-        pkg_ver[pkg] = version(pkg)
-        
+    imported_pkgs = get_imported_package_versions()
+    if pkgs:
+        imported_pkgs = imported_pkgs.loc[imported_pkgs.pkgs.isin(pkgs)] 
+    imported_pkgs = imported_pkgs.sort_values('pkgs')
+    pkg_ver = dict(zip(imported_pkgs.pkgs, imported_pkgs.version))
     env_info = dict(python_version = py_ver,
                     python_path = sys.executable,
                     package_versions = pkg_ver)
-    
     return env_info
         
 def sys_info(pkgs = None, tz = 'America/New_York'):
+    # pkgs: str or list to filter for only specific pkgs. pkg must be imported
     machine_info = get_machine_info()
     usage = get_resource_usage(tz)
     env_info = get_env_info(pkgs)
