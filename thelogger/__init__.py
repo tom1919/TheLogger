@@ -7,8 +7,20 @@ Easy logging, timing and email notifications of code execution.
 @author: tommy
 """
 
-from .logger import logger, log, lg
+from .__logger import logger, log, lg
 from .notify import notify
 from .dirty_timer import beg, end, timer
+from .sys_meta import (
+    get_cpu_model,
+    get_machine_info,
+    get_resource_usage,
+    get_env_info,
+    sys_info
+    )
 
-from ._ver import __version__
+from .__ver import __version__
+
+try:
+    del __ver, __logger
+except:
+    pass 

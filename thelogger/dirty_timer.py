@@ -28,7 +28,7 @@ def timer():
     -------
     >>> import thelogger as tl
     >>> import time 
-    >>> with timer():
+    >>> with tl.timer():
     ...     time.sleep(1)
     Elapsed Time: 0:00:00.999
     """
