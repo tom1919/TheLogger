@@ -14,6 +14,7 @@ from .sys_meta import (
     get_cpu_model,
     get_machine_info,
     get_resource_usage,
+    get_imported_pkg_vers,
     get_env_info,
     sys_info
     )
