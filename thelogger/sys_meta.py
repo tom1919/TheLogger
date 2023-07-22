@@ -67,7 +67,7 @@ def try_version(x):
         ver = '?'# std libs don't have versions
     return ver
 
-def get_imported_package_versions():
+def get_imported_pkg_vers():
     # excludes std libs
     package_names = set()
     for module_name, module in sys.modules.items():
@@ -86,7 +86,7 @@ def get_imported_package_versions():
 def get_env_info(pkgs = None):
     py_ver = ".".join(str(component) for component in sys.version_info[:3])
     pkgs = [pkgs] if type(pkgs) == str else pkgs
-    imported_pkgs = get_imported_package_versions()
+    imported_pkgs = get_imported_pkg_vers()
     if pkgs:
         imported_pkgs = imported_pkgs.loc[imported_pkgs.pkgs.isin(pkgs)] 
     imported_pkgs = imported_pkgs.sort_values('pkgs')
