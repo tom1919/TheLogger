@@ -61,26 +61,36 @@ def get_resource_usage(tz = 'America/New_York'):
     return usage
 
 def try_version(x):
+    # some pkgs have diff dist names so this doesnt always work
+    # std libs don't have versions
     try:
         ver = version(x)
     except:
-        ver = '?'# std libs don't have versions
+        ver = None
     return ver
 
 def get_imported_pkg_vers():
-    # excludes std libs
-    package_names = set()
+    nms = []
+    vers = []
     for module_name, module in sys.modules.items():
         if (module and hasattr(module, '__package__') and module.__package__
-        and module_name[0] != '_'):
-            package_names.add(module.__package__)
-    imp_mod = pd.Series(list(package_names), name = 'pkgs')
-    imp_mod = imp_mod.str.split('.').str[0]
-    imp_mod = imp_mod.drop_duplicates()
-    imp_mod = pd.DataFrame(imp_mod)
-    imp_mod['version'] = imp_mod.pkgs.apply(lambda x: try_version(x))
-    imp_mod = imp_mod.loc[imp_mod.version != '?'].sort_values('pkgs')\
-        .reset_index(drop=True)
+        and module_name[0] != '_' and '.' not in module_name):
+            try:
+                # some pkgs dont have __version__ attr
+                ver = getattr(module, '__version__')
+            except:
+                ver = None 
+            nms.append(module.__package__)
+            vers.append(ver)
+    imp_mod = pd.DataFrame(dict(nm=nms, ver=vers)).drop_duplicates()
+    missing_ver = imp_mod.loc[imp_mod.ver.isnull()]
+    ver_from_meta = missing_ver.nm.apply(lambda x: try_version(x))
+    imp_mod.ver = imp_mod.ver.fillna(ver_from_meta)
+    imp_mod.ver = imp_mod.ver.str.strip()
+    imp_mod = imp_mod.loc[imp_mod.ver.notnull()].drop_duplicates()\
+        .sort_values('nm').reset_index(drop=True)
+    imp_mod.columns = ['pkgs', 'version']
+            
     return imp_mod
 
 def get_env_info(pkgs = None):
