@@ -48,6 +48,7 @@ def get_machine_info():
 def get_resource_usage(tz = 'America/New_York'):
     
     utc_now = datetime.datetime.utcnow()
+    utc_now = utc_now.replace(tzinfo=pytz.utc)
     tz = pytz.timezone(tz)
     dttm = utc_now.astimezone(tz)
     dttm =  dttm.strftime("%Y-%m-%d %H:%M:%S.%f %Z")
