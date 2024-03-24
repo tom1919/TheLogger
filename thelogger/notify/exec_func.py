@@ -52,7 +52,7 @@ def _exec_func(function, email, timeit, logger, printf, notes, error, host,
                 start_time, end_time, err_traceback, notes)
         
     if latest_error is not None:
-        _log_msg(logger, printf, f"Error in {code}...\n{err_traceback}", 
+        _log_msg(logger, printf, f"Error in: {code}...\n{err_traceback}", 
                  err_traceback)
         if error:
             raise latest_error
@@ -205,8 +205,8 @@ def _send_email(email, host, fn_meta, fn_name, latest_error, min_exec_tm, code,
     s.quit()
 
 def _format_msg(fn_meta, fn_name, min_exec_tm):
-    fn_meta_txt = tabulate(fn_meta, tablefmt="github", numalign = 'left',
+    fn_meta_txt = tabulate(fn_meta, tablefmt="psql", numalign = 'left',
                            headers = fn_meta.columns, showindex = False)
-    msg = f"Inputs and Output of {fn_name}:\n{fn_meta_txt}"
+    msg = f"Input(s) / Output of {fn_name}:\n{fn_meta_txt}"
     msg = f"{msg}\nElapsed Time: {min_exec_tm}"
     return msg
