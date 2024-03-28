@@ -105,20 +105,24 @@ def _log_msg(logger, printf, msg, err_traceback = None):
         print(f"{pd.to_datetime('today').strftime('[%y%m%d %H:%M:%S]')} {msg}")
 
 def _custom_obj_str(obj):
-    strg = str(obj)[0:50] if hasattr(obj, '__str__') else None
-    if type(obj) == pd.DataFrame:
-        cols = [str(col) for col in obj.columns.values]
-        strg = f"cols: {', '.join(cols)[0:50]}..." 
+    if hasattr(obj, 'columns'):
+        cols = [str(col) for col in obj.columns]
+        strg = f"cols: {', '.join(cols)}"
+        strg = strg[0:50] + '...' if len(strg) > 50 else strg
+    elif hasattr(obj, '__str__'):
+        strg = str(obj)
+        strg = strg if len(strg) <= 50 else 'NA'
+    else:
+        strg = 'NA'
     return strg
 
 def _len(obj):
-    try:
-        if type(obj) == pd.DataFrame:
+    if hasattr(obj, 'shape'):
             length = obj.shape
-        else:
-            length = len(obj)
-    except:
-        length = None
+    elif hasattr(obj, '__len__'):
+        length = len(obj)
+    else:
+        length = 'NA'
     return length
 
 def _fn_meta(function, args, kwargs, result):
@@ -129,10 +133,11 @@ def _fn_meta(function, args, kwargs, result):
     
     meta = []
     for param, arg in all_args.items():
-        meta.append([param, 
-                     re.sub('<class |>', '', str(type(arg))), 
-                     _len(arg),
-                     _custom_obj_str(arg)])
+        type_ = re.sub('<class |>', '', str(type(arg)))
+        type_ = type_.replace('polars.dataframe.frame', 'polars')
+        type_ = type_.replace('pandas.core.frame', 'pandas')
+        type_ = type_.replace('pandas._libs.tslibs.timestamps', 'pandas')
+        meta.append([param, type_, _len(arg), _custom_obj_str(arg)])
         
     cols = ['Variable', 'Type', 'Length', 'String']
     meta = pd.DataFrame.from_records(meta, columns = cols) 
