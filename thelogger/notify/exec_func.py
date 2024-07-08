@@ -134,9 +134,9 @@ def _fn_meta(function, args, kwargs, result):
     meta = []
     for param, arg in all_args.items():
         type_ = re.sub('<class |>', '', str(type(arg)))
-        type_ = type_.replace('polars.dataframe.frame', 'polars')
-        type_ = type_.replace('pandas.core.frame', 'pandas')
-        type_ = type_.replace('pandas._libs.tslibs.timestamps', 'pandas')
+        split_type = type_.split('.')
+        if len(split_type) > 1:
+            type_ = f"{split_type[0]}.{split_type[-1]}"
         meta.append([param, type_, _len(arg), _custom_obj_str(arg)])
         
     cols = ['Variable', 'Type', 'Length', 'String']
