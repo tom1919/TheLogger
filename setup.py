@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-ver = 'v0.3.9'
+ver = 'v0.4.1'
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -12,10 +12,7 @@ setup(
   license='Apache 2.0',       
   description = 'Easy logging, timing and email notifications of code execution.',  
   long_description = long_description,
-  long_description_content_type = 'text/markdown',
-  author = 'Tom1919',                   
-  author_email = 'py.notify1@gmail.com',      
-  url = 'https://github.com/tom1919/TheLogger',   
+  long_description_content_type = 'text/markdown',   
   keywords = ['log', 'logging', 'logger', 'email', 'timimg', 'notification'],  
   install_requires = ['pandas','tabulate', 'importlib-metadata >= 1.0 ; python_version < "3.8"',
   'pytz', 'psutil', 'tzlocal'], 

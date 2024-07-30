@@ -47,7 +47,10 @@ def get_machine_info():
 
 def get_resource_usage(tz = 'America/New_York'):
     
-    utc_now = datetime.datetime.utcnow()
+    try:
+        utc_now = datetime.datetime.now(datetime.UTC) 
+    except:
+        utc_now = datetime.datetime.utcnow()
     utc_now = utc_now.replace(tzinfo=pytz.utc)
     tz = pytz.timezone(tz)
     dttm = utc_now.astimezone(tz)
@@ -73,7 +76,8 @@ def try_version(x):
 def get_imported_pkg_vers():
     nms = []
     vers = []
-    for module_name, module in sys.modules.items():
+    sys_modules = sys.modules.copy()
+    for module_name, module in sys_modules.items():
         if (module and hasattr(module, '__package__') and module.__package__
         and module_name[0] != '_' and '.' not in module_name):
             try:
